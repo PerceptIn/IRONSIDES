@@ -10,7 +10,7 @@ This package lets you use the Ironsides stereo camera with ROS.
     - mkdir -p ~/catkin_ws/src
     - cd ~/catkin_ws/
     - catkin_make
-    - write "source ~/catkin_ws/devel/setup.bash" in "~/.bashrc"
+    - source ~/catkin_ws/devel/setup.bash
 - Import and make our code
     - place pirvs_ros folder in ~/catkin_ws/src
     - run init python script to import PIRVS SDK
