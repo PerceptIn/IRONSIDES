@@ -1,6 +1,6 @@
 # Ironsides - ROS Integration
 
-This package lets you use the Ironsides visual inertial module with ROS.
+This package lets you use the Ironsides visual inertial computing module with ROS.
 
 ## Getting started
 
