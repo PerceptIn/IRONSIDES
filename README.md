@@ -1,10 +1,10 @@
 # Ironsides - ROS Integration
 
-This package lets you use the Ironsides stereo camera with ROS.
+This package lets you use the Ironsides visual inertial module with ROS.
 
 ## Getting started
 
-- Install ROS(Kinetic)
+- Install ROS (Kinetic)
     - http://wiki.ros.org/kinetic/Installation/Ubuntu
 - Create a ROS Workspace
     - mkdir -p ~/catkin_ws/src
@@ -41,10 +41,10 @@ This package lets you use the Ironsides stereo camera with ROS.
     - rosrun pirvs_ros stereo_camera_node [cam_calib_left.yaml] [cam_calib_left.yaml]
 - Check image:
     - rosrun image_view image_view image:=[topic name]
-    - eg. rosrun image_view image_view image:=/pirvs_cam_raw/StereoImage/left
+    - e.g., rosrun image_view image_view image:=/pirvs_cam_raw/StereoImage/left
 - Check IMU,cameraInfo:
     - rostopic echo [topic name]
-    - eg. rostopic echo IMU/data_raw
+    - e.g., rostopic echo IMU/data_raw
     
 ### Test Depth_camera_node
 - Published topic:
@@ -55,7 +55,7 @@ This package lets you use the Ironsides stereo camera with ROS.
     - rosrun pirvs_ros depth_camera_node 
 - Check image:
     - rosrun image_view image_view image:=[topic name]
-    - eg. rosrun image_view image_view image:=/pirvs_cam_depth/StereoImage/rect_left
+    - e.g., rosrun image_view image_view image:=/pirvs_cam_depth/StereoImage/rect_left
       
 ### Test Slam_node
 - Published topic:
@@ -68,13 +68,13 @@ This package lets you use the Ironsides stereo camera with ROS.
     - rosrun pirvs_ros slam_node [calib.json] [vocab.json] 
 - Check image:
     - rosrun image_view image_view image:=[topic name]
-    - eg. rosrun image_view image_view image:=/pirvs_slam/StereoImage/left
+    - e.g., rosrun image_view image_view image:=/pirvs_slam/StereoImage/left
 - Check Pose:
     - rostopic echo [topic name]
-    - eg. rostopic echo Pose
+    - e.g., rostopic echo Pose
 - Check Pose using RVIZ:
     - rosrun rviz rviz
     - add odometry, listen topic "odom"
     - set fixed frame to my frame
 
-For more information visit [PerceptIn ROS Wiki](http://wiki.ros.org/perceptin)
+For more information visit [PerceptIn ROS Wiki](https://wiki.ros.org/perceptin)
