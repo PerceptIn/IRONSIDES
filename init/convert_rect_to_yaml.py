@@ -104,7 +104,7 @@ if __name__ == "__main__":
         print "[calib_input JSON]" "[calib_output YAML]"
     calib_file = sys.argv[1]
     output_file = sys.argv[2]
-    # calib_file = "calib_PerceptIn_Ironsides_rectified_3030.json"
+    # calib_file = "calib_PerceptIn_Ironsides_rectified_3140.json"
     # output_file = calib_file[:-9]
     with open(calib_file) as ff:
         data = json.load(ff)

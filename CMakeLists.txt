@@ -43,6 +43,7 @@ set(EXT_LIBS
         -ldl
         -fopenmp
         -fPIC
+	-ljpeg
         )
 
 catkin_package(
@@ -58,8 +59,8 @@ include_directories(
 )
 
 add_library(pirvs INTERFACE)
-target_include_directories(pirvs INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/pirvs/include)
-target_link_libraries(pirvs INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/pirvs/lib/libPerceptInPIRVS.a ${EXT_LIBS})
+target_include_directories(pirvs INTERFACE ${PI_PIRVS_SDK}/include)
+target_link_libraries(pirvs INTERFACE ${PI_PIRVS_SDK}/lib/libPerceptInPIRVS.a ${EXT_LIBS})
 
 add_executable(stereo_camera_node src/stereo_camera_node.cpp)
 target_link_libraries(stereo_camera_node ${catkin_LIBRARIES} pirvs)

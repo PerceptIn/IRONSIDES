@@ -38,7 +38,7 @@ This package lets you use the Ironsides stereo camera with ROS.
     - StereoImage/left/cameraInfo: left cam calibration
     - StereoImage/right/cameraInfo: right cam calibration
 - Run Stereo_camera_node:
-    - rosrun pirvs_ros stereo_camera_node [cam_calib_left.yaml] [cam_calib_left.yaml]
+    - rosrun pirvs_ros stereo_camera_node [cam_calib_left.yaml] [cam_calib_right.yaml]
 - Check image:
     - rosrun image_view image_view image:=[topic name]
     - eg. rosrun image_view image_view image:=/pirvs_cam_raw/StereoImage/left

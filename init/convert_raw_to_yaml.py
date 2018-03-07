@@ -69,81 +69,158 @@ def CreateCalib4IMU(data, output):
 #create left camera calib file
 def CreateCalib4LeftCam(data, output):
     model = data["children"]["child"]["children"]["child"]["model"]
-    camera_matrix = {"rows" : 3,
-                     "cols" : 3}
-    camera_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + \
-                            [float(i) for i in model["camera_matrix"][1]] + \
-                            [float(i) for i in model["camera_matrix"][2]]
-    distortion_coefficients = {"rows" : 1,
-                               "cols" : 4}
-    distortion_coefficients["data"] = [float(i) for i in model["distortion"][0]] + \
-                                      [float(i) for i in model["distortion"][1]] + \
-                                      [float(i) for i in model["distortion"][2]] + \
-                                      [float(i) for i in model["distortion"][3]]
-    rectification_matrix = { "rows" : 3,
-                             "cols" : 3,
-                             "data" : [1, 0, 0, 0, 1, 0, 0, 0, 1]}
-    projection_matrix = { "rows" : 3,
-                          "cols" : 4}
-    projection_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + [0] +\
-                                [float(i) for i in model["camera_matrix"][1]] + [0] +\
-                                [float(i) for i in model["camera_matrix"][2]] + [0]
-    calib_left = { "image_width"            : int(model["image_size"]["width"]),
-                   "image_height"           : int(model["image_size"]["height"]),
-                   "camera_name"            : "stereo_left",
-                   "camera_matrix"          : camera_matrix,
-                   "distortion_model"       :"fisheye",
-                   "distortion_coefficients": distortion_coefficients,
-                   "rectification_matrix"   : rectification_matrix,
-                   "projection_matrix"      : projection_matrix
-		}
-    with open(output, 'w') as yaml_file:
-        yaml.safe_dump(calib_left, yaml_file, default_flow_style=False)
-	print "    ---created " + output
+    camera_model = model["type"]
+    if camera_model == "fisheye_camera":
+        camera_matrix = {"rows" : 3,
+                         "cols" : 3}
+        camera_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + \
+                                [float(i) for i in model["camera_matrix"][1]] + \
+                                [float(i) for i in model["camera_matrix"][2]]
+        distortion_coefficients = {"rows" : 1,
+                                   "cols" : 4}
+        distortion_coefficients["data"] = [float(i) for i in model["distortion"][0]] + \
+                                          [float(i) for i in model["distortion"][1]] + \
+                                          [float(i) for i in model["distortion"][2]] + \
+                                          [float(i) for i in model["distortion"][3]]
+        rectification_matrix = { "rows" : 3,
+                                 "cols" : 3,
+                                 "data" : [1, 0, 0, 0, 1, 0, 0, 0, 1]}
+        projection_matrix = { "rows" : 3,
+                              "cols" : 4}
+        projection_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + [0] +\
+                                    [float(i) for i in model["camera_matrix"][1]] + [0] +\
+                                    [float(i) for i in model["camera_matrix"][2]] + [0]
+        calib_left = { "image_width"            : int(model["image_size"]["width"]),
+                       "image_height"           : int(model["image_size"]["height"]),
+                       "camera_name"            : "stereo_left",
+                       "camera_matrix"          : camera_matrix,
+                       "distortion_model"       :"fisheye",
+                       "distortion_coefficients": distortion_coefficients,
+                       "rectification_matrix"   : rectification_matrix,
+                       "projection_matrix"      : projection_matrix
+            }
+        with open(output, 'w') as yaml_file:
+            yaml.safe_dump(calib_left, yaml_file, default_flow_style=False)
+        print "    ---created " + output + " distortion_model: fisheye"
+    elif camera_model == "catadioptric_camera":
+        camera_matrix = {"rows" : 3,
+                         "cols" : 3}
+        camera_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + \
+                                [float(i) for i in model["camera_matrix"][1]] + \
+                                [float(i) for i in model["camera_matrix"][2]]
+        distortion_coefficients = {"rows" : 1,
+                                   "cols" : 4}
+        distortion_coefficients["data"] = [float(model["distortion"]["k1"])] + \
+                                          [float(model["distortion"]["k2"])] + \
+                                          [float(model["distortion"]["k3"])] + \
+                                          [float(model["distortion"]["k4"])]
+        rectification_matrix = { "rows" : 3,
+                                 "cols" : 3,
+                                 "data" : [1, 0, 0, 0, 1, 0, 0, 0, 1]}
+        projection_matrix = { "rows" : 3,
+                              "cols" : 4}
+        projection_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + [0] + \
+                                    [float(i) for i in model["camera_matrix"][1]] + [0] + \
+                                    [float(i) for i in model["camera_matrix"][2]] + [0]
+        unified_model_params = {
+            "eta" : float(model["unified_model_params"]["eta"]),
+            "xi" : float(model["unified_model_params"]["xi"])
+        }
+        calib_left = { "image_width"            : int(model["image_size"]["width"]),
+                       "image_height"           : int(model["image_size"]["height"]),
+                       "camera_name"            : "stereo_left",
+                       "camera_matrix"          : camera_matrix,
+                       "unified_model_params"   : unified_model_params,
+                       "distortion_model"       :"catadioptric",
+                       "distortion_coefficients": distortion_coefficients,
+                       "rectification_matrix"   : rectification_matrix,
+                       "projection_matrix"      : projection_matrix
+                       }
+        with open(output, 'w') as yaml_file:
+            yaml.safe_dump(calib_left, yaml_file, default_flow_style=False)
+        print "    ---created " + output + " distortion_model: catadioptric"
 
 #create right camera calib file
 def CreateCalib4RightCam(data, output):
     model = data["children"]["child"]["children"]["child"]["children"]["child"]["model"]
-    camera_matrix = {"rows" : 3,
-                     "cols" : 3}
-    camera_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + \
-                            [float(i) for i in model["camera_matrix"][1]] + \
-                            [float(i) for i in model["camera_matrix"][2]]
-    distortion_coefficients = {"rows" : 1,
-                               "cols" : 4}
-    distortion_coefficients["data"] = [float(i) for i in model["distortion"][0]] + \
-                                      [float(i) for i in model["distortion"][1]] + \
-                                      [float(i) for i in model["distortion"][2]] + \
-                                      [float(i) for i in model["distortion"][3]]
-    rectification_matrix = { "rows" : 3,
-                             "cols" : 3,
-                             "data" : [1, 0, 0, 0, 1, 0, 0, 0, 1]}
-    projection_matrix = { "rows" : 3,
-                          "cols" : 4}
-    projection_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + [0] + \
-                                [float(i) for i in model["camera_matrix"][1]] + [0] + \
-                                [float(i) for i in model["camera_matrix"][2]] + [0]
-    calib_right= { "image_width"            : int(model["image_size"]["width"]),
-                   "image_height"           : int(model["image_size"]["height"]),
-                   "camera_name"            : "stereo_right",
-                   "camera_matrix"          : camera_matrix,
-                   "distortion_model"       :"fisheye",
-                   "distortion_coefficients": distortion_coefficients,
-                   "rectification_matrix"   : rectification_matrix,
-                   "projection_matrix"      : projection_matrix
-		}
- 
-    with open(output, 'w') as yaml_file:
-        yaml.safe_dump(calib_right, yaml_file, default_flow_style=False)
-	print "    ---created " + output 
+    camera_model = model["type"]
+    if camera_model == "fisheye_camera":
+        camera_matrix = {"rows" : 3,
+                         "cols" : 3}
+        camera_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + \
+                                [float(i) for i in model["camera_matrix"][1]] + \
+                                [float(i) for i in model["camera_matrix"][2]]
+        distortion_coefficients = {"rows" : 1,
+                                   "cols" : 4}
+        distortion_coefficients["data"] = [float(i) for i in model["distortion"][0]] + \
+                                          [float(i) for i in model["distortion"][1]] + \
+                                          [float(i) for i in model["distortion"][2]] + \
+                                          [float(i) for i in model["distortion"][3]]
+        rectification_matrix = { "rows" : 3,
+                                 "cols" : 3,
+                                 "data" : [1, 0, 0, 0, 1, 0, 0, 0, 1]}
+        projection_matrix = { "rows" : 3,
+                              "cols" : 4}
+        projection_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + [0] + \
+                                    [float(i) for i in model["camera_matrix"][1]] + [0] + \
+                                    [float(i) for i in model["camera_matrix"][2]] + [0]
+        calib_right= { "image_width"            : int(model["image_size"]["width"]),
+                       "image_height"           : int(model["image_size"]["height"]),
+                       "camera_name"            : "stereo_right",
+                       "camera_matrix"          : camera_matrix,
+                       "distortion_model"       :"fisheye",
+                       "distortion_coefficients": distortion_coefficients,
+                       "rectification_matrix"   : rectification_matrix,
+                       "projection_matrix"      : projection_matrix
+            }
 
+        with open(output, 'w') as yaml_file:
+            yaml.safe_dump(calib_right, yaml_file, default_flow_style=False)
+        print "    ---created " + output + " distortion_model: fisheye"
+    elif camera_model == "catadioptric_camera":
+        camera_matrix = {"rows" : 3,
+                         "cols" : 3}
+        camera_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + \
+                                [float(i) for i in model["camera_matrix"][1]] + \
+                                [float(i) for i in model["camera_matrix"][2]]
+        distortion_coefficients = {"rows" : 1,
+                                   "cols" : 4}
+        distortion_coefficients["data"] = [float(model["distortion"]["k1"])] + \
+                                          [float(model["distortion"]["k2"])] + \
+                                          [float(model["distortion"]["k3"])] + \
+                                          [float(model["distortion"]["k4"])]
+        rectification_matrix = { "rows" : 3,
+                                 "cols" : 3,
+                                 "data" : [1, 0, 0, 0, 1, 0, 0, 0, 1]}
+        projection_matrix = { "rows" : 3,
+                              "cols" : 4}
+        projection_matrix["data"] = [float(i) for i in model["camera_matrix"][0]] + [0] + \
+                                    [float(i) for i in model["camera_matrix"][1]] + [0] + \
+                                    [float(i) for i in model["camera_matrix"][2]] + [0]
+        unified_model_params = {
+            "eta" : float(model["unified_model_params"]["eta"]),
+            "xi" : float(model["unified_model_params"]["xi"])
+        }
+        calib_left = { "image_width"            : int(model["image_size"]["width"]),
+                       "image_height"           : int(model["image_size"]["height"]),
+                       "camera_name"            : "stereo_left",
+                       "camera_matrix"          : camera_matrix,
+                       "unified_model_params"   : unified_model_params,
+                       "distortion_model"       :"catadioptric",
+                       "distortion_coefficients": distortion_coefficients,
+                       "rectification_matrix"   : rectification_matrix,
+                       "projection_matrix"      : projection_matrix
+                       }
+        with open(output, 'w') as yaml_file:
+            yaml.safe_dump(calib_left, yaml_file, default_flow_style=False)
+        print "    ---created " + output + " distortion_model: catadioptric"
 if __name__ == "__main__":
     if len(sys.argv)<3:
         print "Not enough input arguments."
         print "[calib_input JSON]" "[calib_output YAML]"
     calib_file = sys.argv[1]
     output_file = sys.argv[2]
-    # calib_file = "calib_PerceptIn_Ironsides_rectified_3030.json"
+    # calib_file = "calib_PerceptIn_Ironsides_3152.json"
     # output_file = calib_file[:-9]
     with open(calib_file) as ff:
         data = json.load(ff)
