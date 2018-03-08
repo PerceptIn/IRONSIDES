@@ -43,6 +43,7 @@ set(EXT_LIBS
         -ldl
         -fopenmp
         -fPIC
+	-ljpeg
         )
 
 catkin_package(
